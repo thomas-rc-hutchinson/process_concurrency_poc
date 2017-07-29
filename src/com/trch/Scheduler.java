@@ -1,34 +1,50 @@
 package com.trch;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by thomashutchinson on 29/07/2017.
  */
 public class Scheduler extends Thread {
 
-    private List<IProcess> processes = new ArrayList<IProcess>();
+    private List<IProcess> unitialisedProcesses = new ArrayList<>();
+    private List<IProcess> processes = new ArrayList<>();
 
     public void startProcess(IProcess process) {
-        process.init();
-
         //lazy hack
         synchronized (processes) {
-            processes.add(process);
+            unitialisedProcesses.add(process);
         }
     }
 
     public void run() {
         while (true) {
-            synchronized (processes) {
-                for (IProcess process : processes) {
-                    if (process.hasAnyMessages()) {
-                        final IProcessMessage processMessage = process.takeProcessMessage();
-                        process.handleMessage(processMessage);
-                    }
-                }
+            handleMessages();
+            initialiseProcesses();
+
+        }
+    }
+
+    private void handleMessages() {
+        synchronized (processes) {
+            for (IProcess process : processes) {
+                process.takeProcessMessage().ifPresent(processMessage -> {
+                    process.handleMessage(processMessage);
+                });
             }
+        }
+    }
+
+    private void initialiseProcesses(){
+        //lazy hack
+        synchronized (unitialisedProcesses){
+           final Iterator<IProcess> unitialisedProcesses = this.unitialisedProcesses.iterator();
+           while(unitialisedProcesses.hasNext()){
+               IProcess process = unitialisedProcesses.next();
+               process.init();
+               processes.add(process);
+               unitialisedProcesses.remove();
+           }
         }
     }
 }

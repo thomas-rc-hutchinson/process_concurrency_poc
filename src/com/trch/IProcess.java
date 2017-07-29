@@ -1,6 +1,7 @@
 package com.trch;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -16,11 +17,14 @@ public abstract class IProcess {
         processMessages.add(processMessage);
     }
 
-    final IProcessMessage takeProcessMessage(){
-        return processMessages.remove();
+    final Optional<IProcessMessage> takeProcessMessage(){
+        if(hasAnyMessages()){
+            return Optional.of(processMessages.remove());
+        }
+        return Optional.empty();
     }
 
-    final public boolean hasAnyMessages() {
+    final private boolean hasAnyMessages() {
         return !processMessages.isEmpty();
     }
 

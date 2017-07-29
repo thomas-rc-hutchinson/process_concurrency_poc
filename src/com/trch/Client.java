@@ -36,7 +36,6 @@ public class Client {
         public void handleMessage(IProcessMessage processMessage) {
             Echo echo = (Echo) processMessage;
             System.out.println("Received message:" + echo.toString());
-            String message = echo.getMessage();
             echo.getProcess().sendMessage(new Echo(this, NAME));
         }
     }
