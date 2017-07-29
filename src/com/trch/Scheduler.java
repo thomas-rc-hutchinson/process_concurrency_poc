@@ -42,7 +42,7 @@ public class Scheduler extends Thread {
                IProcess process = iterator.next();
                process.init();
 
-               //process not initialised, move to process list
+               //process now initialised, move to process list
                processes.add(process);
                iterator.remove();
            }
