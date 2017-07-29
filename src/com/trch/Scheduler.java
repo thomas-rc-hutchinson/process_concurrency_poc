@@ -21,7 +21,6 @@ public class Scheduler extends Thread {
         while (true) {
             handleMessages();
             initialiseProcesses();
-
         }
     }
 
@@ -38,12 +37,14 @@ public class Scheduler extends Thread {
     private void initialiseProcesses(){
         //lazy hack
         synchronized (unitialisedProcesses){
-           final Iterator<IProcess> unitialisedProcesses = this.unitialisedProcesses.iterator();
-           while(unitialisedProcesses.hasNext()){
-               IProcess process = unitialisedProcesses.next();
+           final Iterator<IProcess> iterator = unitialisedProcesses.iterator();
+           while(iterator.hasNext()){
+               IProcess process = iterator.next();
                process.init();
+
+               //process not initialised, move to process list
                processes.add(process);
-               unitialisedProcesses.remove();
+               iterator.remove();
            }
         }
     }
