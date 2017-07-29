@@ -21,7 +21,11 @@ public class ProcessManager {
     private ProcessManager() {
     }
 
-    public void start(){
+    public static void start(){
+        getInstance().doStart();
+    }
+
+    public void doStart(){
         for(int i = 0; i <= AVAILABLE_PROCESSORS; i++){
             final Scheduler scheduler = new Scheduler();
             schedulers.add(scheduler);
@@ -29,7 +33,11 @@ public class ProcessManager {
         }
     }
 
-    public void startProcess(final IProcess process){
+    public static void startProcess(final IProcess process){
+        getInstance().doStartProcess(process);
+    }
+
+    public void doStartProcess(final IProcess process){
         final Scheduler scheduler = schedulers.get(pos);
 
         if(pos == (AVAILABLE_PROCESSORS - 1)){

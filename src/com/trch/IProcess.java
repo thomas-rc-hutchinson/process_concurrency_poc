@@ -14,14 +14,20 @@ public abstract class IProcess {
     abstract void init();
 
     final void sendMessage(IProcessMessage processMessage){
-        processMessages.add(processMessage);
+        //lazy hack
+        synchronized (processMessage){
+            processMessages.add(processMessage);
+        }
     }
 
     final Optional<IProcessMessage> takeProcessMessage(){
+        //lazy hack
+        synchronized (processMessages){
         if(hasAnyMessages()){
             return Optional.of(processMessages.remove());
         }
         return Optional.empty();
+        }
     }
 
     final private boolean hasAnyMessages() {

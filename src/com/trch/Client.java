@@ -5,17 +5,16 @@ package com.trch;
  */
 public class Client {
     public static void main(String[] args) throws Exception {
-        ProcessManager processManager = ProcessManager.getInstance();
-        processManager.start();
+        ProcessManager.start();
 
         IProcess process1 = new EchoProcess("process 1");
-        processManager.startProcess(process1);
+        ProcessManager.startProcess(process1);
 
         IProcess process2 = new EchoProcess("process 2");
-        processManager.startProcess(process2);
-
+        ProcessManager.startProcess(process2);
 
         process1.sendMessage(new Echo(process2, "message from main method"));
+        process2.sendMessage(new Echo(process1, "message from main method"));
 
         Thread.sleep(Integer.MAX_VALUE);
     }
@@ -29,7 +28,7 @@ public class Client {
         }
         @Override
         public void init() {
-            System.out.println("Starting echo process");
+            System.out.println("Starting echo process " + NAME);
         }
 
         @Override
